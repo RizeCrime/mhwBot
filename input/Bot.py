@@ -9,7 +9,7 @@ from threading import *
 import threading 
 from pynput import keyboard
 from pynput.mouse import Controller
-import win32api
+# import win32api
 import pyautogui
 import random 
 import sys 
