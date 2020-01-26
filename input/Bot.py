@@ -38,13 +38,14 @@ S = 0x53
 D = 0x44
 Z = 0x5A
 ESC = 0x1B
+SPACE = 0x20
 
 class keyLoop(Thread):
     def run(self):
         global controller
         global killer 
         loops = 0
-        keys = [W, A, D] 
+        keys = [W, A, D, SPACE] 
         while 42:
             if killer == False:
                 if controller == True:
