@@ -1,13 +1,9 @@
 Monster Hunter World Steamworks button masher bot.
 
-My fingers started to hurt from mashing AWD for too long, here is a bot that spams for you.
+My fingers started to hurt from mashing AWD for too long, so here is a bot that spams for you.
 
-- really unoptimized, just spams random keys
-- terrible code, ripped mostly from a different project
-- time investment: about 20 minutes
-- but it works so don't blame me
+- spams a selection of A, W, D
+- also spams SPACE to restart steamworks
+- start/pause script with >>C<< and go afk
 
-bugs:
-
-pressing x does something not good, it was supposed to close the script but instead it just hangs and the console window stays open.
-fix: close console and restart script 
+- skipping the cutscene is not possible, it requires to press the >>back<< button and that exits the steamworks when spammed
