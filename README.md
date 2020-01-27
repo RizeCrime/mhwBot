@@ -9,5 +9,5 @@ My fingers started to hurt from mashing AWD for too long, here is a bot that spa
 
 bugs:
 
-pressing x does something not good, it was supposed to close the script but instead it just hangs and the console window stays open
+pressing x does something not good, it was supposed to close the script but instead it just hangs and the console window stays open.
 fix: close console and restart script 
