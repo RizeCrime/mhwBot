@@ -1,7 +1,3 @@
-# directkeys.py
-# http://stackoverflow.com/questions/13564851/generate-keyboard-events
-# msdn.microsoft.com/en-us/library/dd375731
-
 import ctypes
 from ctypes import wintypes
 import time
@@ -9,8 +5,6 @@ from threading import *
 import threading 
 from pynput import keyboard
 from pynput.mouse import Controller
-# import win32api
-import pyautogui
 import random 
 import sys 
 
@@ -45,21 +39,19 @@ class keyLoop(Thread):
         global controller
         global killer 
         loops = 0
-        keys = [W, A, D, SPACE] 
         while 42:
-            if killer == False:
-                if controller == True:
-                    key = random.choice(keys) 
-                    PressKey(key)
-                    time.sleep(0.01) 
-                    ReleaseKey(key)
-                    loops += 1
-                    print(loops)
-                    time.sleep(0.05)
-                elif controller == False:
-                    time.sleep(0.05)
-            elif killer == True: 
-                break 
+            if controller == True:
+                keys = [W, A, D, SPACE] 
+                key = random.choice(keys) 
+                PressKey(key)
+                time.sleep(0.01) 
+                ReleaseKey(key)
+                keys.remove(key)
+                loops += 1
+                print(loops)
+                time.sleep(0.05)
+            elif controller == False:
+                time.sleep(0.05)
 
     
 
@@ -73,10 +65,6 @@ def on_press(key):
         elif controller == False:
             controller = True
             print('Started')
-
-    if key == keyboard.KeyCode(char='x'):
-        killer = True 
-        kLoop.join() 
 
 # C struct definitions
 
@@ -144,12 +132,10 @@ def ReleaseKey(hexKeyCode):
     user32.SendInput(1, ctypes.byref(x), ctypes.sizeof(x))
 
 if __name__ == "__main__":
-    threadList = []
     kLoop = keyLoop()
     controller = False
     killer = False 
     kLoop.start()
-    threadList.append(kLoop)
     with keyboard.Listener(
             on_press=on_press) as listener:
         listener.join()
