@@ -60,8 +60,7 @@ def on_press(key):
         if controller == True:
             eTime = time.time() ## log time for statistics printout
             controller = False ## switch controller 
-            print(
-                f'Stopped with {round(eTime - sTime, 2)} seconds runtime and a total of {loops} loops.')
+            print(f'Stopped at {time.ctime()} with {round(eTime - sTime, 2)} seconds runtime and a total of {loops} loops.')
             # loops = 0
         elif controller == False:
             sTime = time.time() ## log time for statistics printout
