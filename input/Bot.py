@@ -37,34 +37,37 @@ SPACE = 0x20
 class keyLoop(Thread):
     def run(self):
         global controller
-        global killer 
+        global loops
         loops = 0
         while 42:
-            if controller == True:
-                keys = [W, A, D, SPACE] 
+            if controller == True: ## controller toggle is bound in the on_press() listener
+                keys = [W, A, D, SPACE] ## plus keys.remove(key) to avoid keys being pressed twice in a row 
                 key = random.choice(keys) 
                 PressKey(key)
                 time.sleep(0.01) 
                 ReleaseKey(key)
-                keys.remove(key)
+                keys.remove(key) ## plus list of keys to avoid keys being pressed twice in a row
                 loops += 1
-                print(loops)
+                #print(loops) ## add total run time print on pause // improve loops print 
                 time.sleep(0.05)
             elif controller == False:
                 time.sleep(0.05)
 
-    
-
 def on_press(key):
     global controller
-    global killer 
-    if key == keyboard.KeyCode(char='c'):
+    global loops, sTime, eTime 
+    if key == keyboard.KeyCode(char='c'): ## keyboard listener to toggle global controller
         if controller == True:
-            controller = False
-            print('Stopped')
+            eTime = time.time() ## log time for statistics printout
+            controller = False ## switch controller 
+            print(
+                f'Stopped with {round(eTime - sTime, 2)} seconds runtime and a total of {loops} loops.')
+            # loops = 0
         elif controller == False:
-            controller = True
-            print('Started')
+            sTime = time.time() ## log time for statistics printout
+            controller = True ## switch controller
+            print(f'Started at {time.ctime(sTime)}.')
+
 
 # C struct definitions
 
@@ -119,7 +122,6 @@ user32.SendInput.argtypes = (wintypes.UINT, # nInputs
                              LPINPUT,       # pInputs
                              ctypes.c_int)  # cbSize
 
-
 def PressKey(hexKeyCode):
     x = INPUT(type=INPUT_KEYBOARD,
               ki=KEYBDINPUT(wVk=hexKeyCode))
@@ -132,10 +134,12 @@ def ReleaseKey(hexKeyCode):
     user32.SendInput(1, ctypes.byref(x), ctypes.sizeof(x))
 
 if __name__ == "__main__":
-    kLoop = keyLoop()
-    controller = False
-    killer = False 
-    kLoop.start()
-    with keyboard.Listener(
-            on_press=on_press) as listener:
+    sTime = time.time()
+    eTime = time.time() 
+    kLoop = keyLoop() ## create keyLoop object 
+    controller = False ## set controller to not fuck shit up 
+    killer = False ## experimental feature, currently removed 
+    kLoop.start() ## start keyLoop (key spammer) as own thread, controlled by controller 
+    with keyboard.Listener( 
+            on_press=on_press) as listener: ## start listener for toggling controller via keypress 
         listener.join()
