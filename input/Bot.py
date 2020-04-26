@@ -7,7 +7,6 @@ from pynput import keyboard
 from pynput.mouse import Controller
 import random 
 import sys 
-import pyautogui 
 
 user32 = ctypes.WinDLL('user32', use_last_error=True)
 
@@ -42,28 +41,20 @@ class keyLoop(Thread):
         loops = 0
         while 42:
             if controller == True: ## controller toggle is bound in the on_press() listener
-                pyautogui.click(button='right')
-                pyautogui.click(button='middle')
+                keys = [W, A, D, SPACE] ## plus keys.remove(key) to avoid keys being pressed twice in a row 
+                key = random.choice(keys) 
+                PressKey(key)
+                time.sleep(0.01) 
+                ReleaseKey(key)
+                keys.remove(key) ## plus list of keys to avoid keys being pressed twice in a row
                 loops += 1
-            elif controller == False:
+                #print(loops) ## add total run time print on pause // improve loops print 
                 time.sleep(0.05)
-    
-class scroller(Thread):
-    def run(self):
-        global scroller
-        global loops
-        loops = 0
-        while 42:
-            if scroller == True:
-                pyautogui.scroll(-5000)
-                loops += 1
             elif controller == False:
                 time.sleep(0.05)
 
 def on_press(key):
     global controller
-    global holder 
-    global scroller 
     global loops, sTime, eTime 
     if key == keyboard.KeyCode(char='c'): ## keyboard listener to toggle global controller
         if controller == True:
@@ -74,29 +65,6 @@ def on_press(key):
         elif controller == False:
             sTime = time.time() ## log time for statistics printout
             controller = True ## switch controller
-            print(f'Started at {time.ctime(sTime)}.')
-
-    if key == keyboard.KeyCode(char='v'): ## keyboard listener to toggle global controller
-        if holder == True:
-            eTime = time.time() ## log time for statistics printout
-            pyautogui.mouseUp(button='right')
-            holder = False ## switch controller 
-            print(f'Stopped at {time.ctime()} with {round(eTime - sTime, 2)} seconds runtime and a total of {loops} loops.')
-            # loops = 0
-        elif holder == False:
-            sTime = time.time() ## log time for statistics printout
-            pyautogui.mouseDown(button='right')
-            print(f'Started at {time.ctime(sTime)}.')
-
-    if key == keyboard.KeyCode(char='b'): ## keyboard listener to toggle global controller
-        if scroller == True:
-            eTime = time.time() ## log time for statistics printout
-            scroller = False ## switch controller 
-            print(f'Stopped at {time.ctime()} with {round(eTime - sTime, 2)} seconds runtime and a total of {loops} loops.')
-            # loops = 0
-        elif scroller == False:
-            sTime = time.time() ## log time for statistics printout
-            scroller = True 
             print(f'Started at {time.ctime(sTime)}.')
 
 
@@ -168,13 +136,9 @@ if __name__ == "__main__":
     sTime = time.time()
     eTime = time.time() 
     kLoop = keyLoop() ## create keyLoop object 
-    scrlr = scroller() 
     controller = False ## set controller to not fuck shit up 
-    scroller = False 
-    holder = False 
     killer = False ## experimental feature, currently removed 
     kLoop.start() ## start keyLoop (key spammer) as own thread, controlled by controller 
-    scrlr.start() 
     with keyboard.Listener( 
             on_press=on_press) as listener: ## start listener for toggling controller via keypress 
         listener.join()
